@@ -7,6 +7,7 @@ import com.example.resource_management_api.user.User;
 import com.example.resource_management_api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ public class AssetService {
     private final AssetStatusHistoryRepository historyRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void changeAssetStatus(Long assetId, AssetStatusChangeRequest request) {
 
         Asset asset = assetRepository.findById(assetId)
@@ -40,7 +42,6 @@ public class AssetService {
                 .reason(request.getReason())
                 .build();
 
-        assetRepository.save(asset);
         historyRepository.save(history);
     }
 }

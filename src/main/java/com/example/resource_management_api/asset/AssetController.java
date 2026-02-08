@@ -3,6 +3,7 @@ package com.example.resource_management_api.asset;
 import com.example.resource_management_api.asset.dto.AssetCreateRequest;
 import com.example.resource_management_api.asset.dto.AssetResponse;
 import com.example.resource_management_api.asset.dto.AssetStatusChangeRequest;
+import com.example.resource_management_api.asset.dto.MaintenancePredictionResponse;
 import com.example.resource_management_api.facility.Facility;
 import com.example.resource_management_api.facility.FacilityRepository;
 import jakarta.validation.Valid;
@@ -20,11 +21,13 @@ public class AssetController {
     private final AssetRepository assetRepository;
     private final FacilityRepository facilityRepository;
     private final AssetService assetService;
+    private final AssetAnalyticsService assetAnalyticsService;
 
     @PostMapping
     public AssetResponse createAsset(
             @RequestBody @Valid AssetCreateRequest request
     ) {
+        System.out.println(request);
         Facility facility = facilityRepository.findById(request.getFacilityId())
                 .orElseThrow(() -> new IllegalArgumentException("Facility not found"));
 
@@ -62,5 +65,10 @@ public class AssetController {
             ) {
         assetService.changeAssetStatus(assetId, request);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/maintenance-prediction")
+    public MaintenancePredictionResponse getMaintenancePrediction(@PathVariable Long id) {
+        return assetAnalyticsService.predictNextMaintenance(id);
     }
 }

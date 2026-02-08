@@ -2,10 +2,12 @@ package com.example.resource_management_api.asset;
 
 import com.example.resource_management_api.asset.dto.AssetCreateRequest;
 import com.example.resource_management_api.asset.dto.AssetResponse;
+import com.example.resource_management_api.asset.dto.AssetStatusChangeRequest;
 import com.example.resource_management_api.facility.Facility;
 import com.example.resource_management_api.facility.FacilityRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,7 @@ public class AssetController {
 
     private final AssetRepository assetRepository;
     private final FacilityRepository facilityRepository;
+    private final AssetService assetService;
 
     @PostMapping
     public AssetResponse createAsset(
@@ -50,5 +53,14 @@ public class AssetController {
                 .stream()
                 .map(AssetResponse::new)
                 .toList();
+    }
+
+    @PatchMapping("/{assetId}/status")
+    public ResponseEntity<Void> changeAssetStatus(
+            @PathVariable Long assetId,
+            @RequestBody @Valid AssetStatusChangeRequest request
+            ) {
+        assetService.changeAssetStatus(assetId, request);
+        return ResponseEntity.noContent().build();
     }
 }

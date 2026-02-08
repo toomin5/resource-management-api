@@ -31,4 +31,8 @@ public class Asset extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AssetStatus currentStatus;
+
+    public void changeStatus(AssetStatus status) {
+        this.currentStatus = status;
+    }
 }

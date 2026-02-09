@@ -8,6 +8,7 @@ import lombok.*;
 @Entity
 @Table(name = "assets")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

@@ -34,6 +34,4 @@ public class UserController {
         UserResponse user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
-
-    // You can add more endpoints like updateUser, deleteUser later as needed
 }

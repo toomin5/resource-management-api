@@ -3,11 +3,13 @@ package com.example.resource_management_api.asset;
 import com.example.resource_management_api.asset.dto.AssetCreateRequest;
 import com.example.resource_management_api.asset.dto.AssetResponse;
 import com.example.resource_management_api.asset.dto.AssetStatusChangeRequest;
+import com.example.resource_management_api.asset.dto.AssetUpdateRequest;
 import com.example.resource_management_api.asset.dto.MaintenancePredictionResponse;
 import com.example.resource_management_api.facility.Facility;
 import com.example.resource_management_api.facility.FacilityRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +26,11 @@ public class AssetController {
     private final AssetAnalyticsService assetAnalyticsService;
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public AssetResponse createAsset(
             @RequestBody @Valid AssetCreateRequest request
     ) {
-        System.out.println(request);
+
         Facility facility = facilityRepository.findById(request.getFacilityId())
                 .orElseThrow(() -> new IllegalArgumentException("Facility not found"));
 
@@ -56,6 +59,18 @@ public class AssetController {
                 .stream()
                 .map(AssetResponse::new)
                 .toList();
+    }
+
+    @PutMapping("/{id}")
+    public AssetResponse updateAsset(@PathVariable Long id, @RequestBody @Valid AssetUpdateRequest request) {
+        Asset updatedAsset = assetService.updateAsset(id, request);
+        return new AssetResponse(updatedAsset);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAsset(@PathVariable Long id) {
+        assetService.deleteAsset(id);
     }
 
     @PatchMapping("/{assetId}/status")

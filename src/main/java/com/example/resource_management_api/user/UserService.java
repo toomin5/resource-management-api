@@ -43,6 +43,4 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id));
         return new UserResponse(user);
     }
-
-    // You can add more methods here like updateUser, deleteUser later
 }

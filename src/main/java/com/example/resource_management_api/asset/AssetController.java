@@ -5,6 +5,7 @@ import com.example.resource_management_api.asset.dto.AssetResponse;
 import com.example.resource_management_api.asset.dto.AssetStatusChangeRequest;
 import com.example.resource_management_api.asset.dto.AssetUpdateRequest;
 import com.example.resource_management_api.asset.dto.MaintenancePredictionResponse;
+import com.example.resource_management_api.asset.history.dto.AssetStatusHistoryResponse; // Added import
 import com.example.resource_management_api.facility.Facility;
 import com.example.resource_management_api.facility.FacilityRepository;
 import jakarta.validation.Valid;
@@ -85,5 +86,10 @@ public class AssetController {
     @GetMapping("/{id}/maintenance-prediction")
     public MaintenancePredictionResponse getMaintenancePrediction(@PathVariable Long id) {
         return assetAnalyticsService.predictNextMaintenance(id);
+    }
+
+    @GetMapping("/{id}/history")
+    public List<AssetStatusHistoryResponse> getAssetHistory(@PathVariable Long id) {
+        return assetService.getAssetStatusHistory(id);
     }
 }

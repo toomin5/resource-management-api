@@ -4,6 +4,7 @@ import com.example.resource_management_api.asset.dto.AssetStatusChangeRequest;
 import com.example.resource_management_api.asset.dto.AssetUpdateRequest;
 import com.example.resource_management_api.asset.history.AssetStatusHistory;
 import com.example.resource_management_api.asset.history.AssetStatusHistoryRepository;
+import com.example.resource_management_api.asset.history.dto.AssetStatusHistoryResponse; // Added import
 import com.example.resource_management_api.facility.Facility;
 import com.example.resource_management_api.facility.FacilityRepository;
 import com.example.resource_management_api.user.User;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List; // Added import
+import java.util.stream.Collectors; // Added import
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,7 @@ public class AssetService {
     private final AssetRepository assetRepository;
     private final AssetStatusHistoryRepository historyRepository;
     private final UserRepository userRepository;
-    private final FacilityRepository facilityRepository; // Inject FacilityRepository
+    private final FacilityRepository facilityRepository;
 
     @Transactional
     public void changeAssetStatus(Long assetId, AssetStatusChangeRequest request) {
@@ -70,5 +73,16 @@ public class AssetService {
             throw new IllegalArgumentException("Asset not found with id: " + assetId);
         }
         assetRepository.deleteById(assetId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AssetStatusHistoryResponse> getAssetStatusHistory(Long assetId) {
+
+        assetRepository.findById(assetId)
+                .orElseThrow(() -> new IllegalArgumentException("Asset not found with id: " + assetId));
+
+        return historyRepository.findByAssetIdOrderByChangedAtDesc(assetId).stream()
+                .map(AssetStatusHistoryResponse::new)
+                .collect(Collectors.toList());
     }
 }
